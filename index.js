@@ -37,6 +37,10 @@ client.on("messageCreate", (message)=> {
         if(arr[1] == "class"){updateClass(message)}
     }else if(message.content.startsWith(prefix + "list")){
         fetchData(message);
+    }else if(message.content.startsWith(prefix + "delete")){
+        if(message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
+            deleteUser(message);
+        }else{message.reply("Missing permissions!")}
     }
 })
 
@@ -196,11 +200,9 @@ const fetchData = function (message){
 const postList = function (arr, message){
     if(arr.length != 0){
         if(arr.length != 1){
-            console.log(arr);
             arr.sort(function (a,b){
                 return b.gearscore - a.gearscore;
             });
-            console.log(arr);
         }
     }else {
         message.reply("Oops seems like there's no data...");
@@ -218,6 +220,24 @@ const postList = function (arr, message){
     message.channel.send({embeds: [embed]});
 }
 
+const deleteUser = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length < 2) {
+        message.reply("Invalid input");
+        return
+    }
+    User.deleteOne({name: arr[1]}).then((result) =>{
+        console.log(result);
+        if(result.deletedCount == 1){
+            message.reply("Deleted user: " + arr[1]);
+        }else{
+            message.reply("Couldn't find user " + arr[1]);
+        }
+
+    }).catch((err) =>{
+        console.log(err);
+    })
+}
 
 mongoose.init();
 
