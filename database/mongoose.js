@@ -33,5 +33,16 @@ module.exports = {
         mongoose.connection.on('err', (err) => {
             console.log('database error: ' + err);
         });
+
+        process.on('exit', () =>{
+            mongoose.connection.close();
+            console.log("Closing connection");
+            process.exit();
+        })
+        process.on('SIGINT', () =>{
+            mongoose.connection.close();
+            console.log("Closing connection");
+            process.exit();
+        })
     }
 }

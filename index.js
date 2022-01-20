@@ -30,8 +30,14 @@ client.on("messageCreate", (message)=> {
         }else{message.reply("Missing permissions!")}
     }else if(message.content.startsWith(prefix + "help")){
         sendHelp(message);
+    }else if(message.content.startsWith(prefix + "avg")){
+        average(message);
+    }else if(message.content.startsWith(prefix + "classes")){
+        classesList(message);
     }
 })
+
+
 
 const addGear = function (message){
     let arr = message.content.split(" ");
@@ -80,7 +86,7 @@ const addGear = function (message){
         class: pClass,
         level: level
     });
-    console.log("we're here");
+
     User.countDocuments({userid: userid},
         function (err, count){
             if(count == 0){
@@ -95,6 +101,8 @@ const addGear = function (message){
             }
         });
 }
+
+
 
 const updateGear = function (message){
     let arr = message.content.split(" ");
@@ -122,6 +130,8 @@ const updateGear = function (message){
     }
 }
 
+
+
 const updateLevel = function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
@@ -147,6 +157,8 @@ const updateLevel = function (message){
         message.reply("Incorrect values");
     }
 }
+
+
 
 const updateName = function (message){
     let arr = message.content.split(" ");
@@ -174,6 +186,8 @@ const updateName = function (message){
     }
 }
 
+
+
 const updateClass = function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
@@ -199,11 +213,13 @@ const updateClass = function (message){
     }
 }
 
-const fetchData = function (message){
+
+
+const fetchData = async function (message){
     let arr = message.content.split(" ");
     if(arr.length > 1){
         if(arr[1].match("^([a-zA-Z]{1,20})$")){
-            User.find({class: arr[1]}).then((result)=>{
+            await User.find({class: arr[1]}).then((result)=>{
                 postList(result, message);
             }).catch((err)=>{console.log(err)})
         }else{
@@ -216,6 +232,8 @@ const fetchData = function (message){
         }).catch((err)=>{console.log(err)});
     }
 }
+
+
 
 const postList = function (arr, message){
     if(arr.length != 0){
@@ -240,6 +258,8 @@ const postList = function (arr, message){
     message.channel.send({embeds: [embed]});
 }
 
+
+
 const deleteUser = function (message){
     let arr = message.content.split(" ");
     if(arr.length < 2) {
@@ -259,6 +279,8 @@ const deleteUser = function (message){
     })
 }
 
+
+
 const sendHelp = function (message){
     const helpstr = "```!add\n!update\n!list\n!delete```"
     const embed = new MessageEmbed()
@@ -268,22 +290,109 @@ const sendHelp = function (message){
     message.reply({embeds:[embed]});
 }
 
+
+
+const average = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length < 2){
+        message.reply("Available commands:\n``!avg gearscore``\n``!avg level``");
+    }else if(arr[1] == "gearscore"){
+        averageGear(message);
+    }else if(arr[1] == "level"){
+        averageLevel(message);
+    }
+}
+
+const averageGear = async function (message){
+    let arr = [];
+    await User.find().then((result)=>{
+        arr = result;
+    }).catch((err)=>{
+        console.log(err);
+        message.reply("Database error!");
+        return
+    })
+    let gs = 0;
+    for(let i = 0; i < arr.length; i++){
+        gs += arr[i].gearscore;
+    }
+    gs = gs/arr.length;
+    const embed = new MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle("Guild average")
+        .setDescription("The average gearscore is " + gs.toFixed(2) + " with " + arr.length + " Members");
+    message.reply({embeds:[embed]});
+}
+
+const averageLevel = async function (message){
+    let arr = [];
+    await User.find().then((result)=>{
+        arr = result;
+    }).catch((err)=>{
+        console.log(err);
+        message.reply("Database error!");
+        return
+    })
+    let gs = 0;
+    for(let i = 0; i < arr.length; i++){
+        gs += arr[i].level;
+    }
+    gs = gs/arr.length;
+    const embed = new MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle("Guild average")
+        .setDescription("The average Level is " + gs.toFixed(1) + " with " + arr.length + " Members");
+    message.reply({embeds:[embed]});
+}
+
+const classesList = async function (message){
+    let arr = [];
+    let empty = false
+    await User.find().then((result)=>{
+        if(result.length < 1){
+            message.reply("Oops seems like there's no data...");
+            empty = true;
+        }
+        arr = result;
+    }).catch((err)=>{
+        console.log(err);
+        message.reply("Database error!");
+    });
+
+    if(empty) return;
+
+    let classArr = []
+    for(let i = 0; i < arr.length; i++){
+        let index = classArr.findIndex(obj =>{
+            return obj.class === arr[i].class
+        });
+        if(index != -1){
+            classArr[index].n += 1;
+        }else{
+            let c = {
+                class: arr[i].class,
+                n: 1
+            }
+            classArr.push(c);
+        }
+    }
+    classArr.sort(function (a,b){
+        return b.n - a.gearscore;
+    });
+
+    let postStr = "```"
+    for(let i = 0; i < classArr.length; i++){
+        postStr += "\n" + classArr[i].class + " - " + classArr[i].n;
+    }
+    postStr += "```"
+    const embed = new MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle("Class division (" + arr.length + ")")
+        .setDescription(postStr);
+    message.reply({embeds:[embed]});
+}
+
 mongoose.init();
-
-const gear = new User({
-    userid: 123,
-    name: "GasGas",
-    gearscore: 777.4,
-    class: "Archer",
-    level: 48
-});
-
-/*gear.save()
-    .then((result) => console.log(result))
-    .catch((err) => console.log(err));
-
- */
-
 
 client.login(process.env.TOKEN).then(r => {
     console.log("Successful login");
