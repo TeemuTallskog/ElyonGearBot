@@ -1,4 +1,4 @@
-const {Client, Intents}= require("discord.js");
+const {Client, Intents, MessageEmbed}= require("discord.js");
 require('dotenv').config();
 const mongoose = require('./database/mongoose');
 const User = require('./models/user');
@@ -8,7 +8,7 @@ const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_M
 const prefix = "!";
 
 client.on('ready', () => {
-    console.log('Logged in as ${client.user.tag}!')
+    console.log('Bot has logged in!')
 });
 
 
@@ -32,9 +32,11 @@ client.on("messageCreate", (message)=> {
         let arr = message.content.split(" ");
         if(arr.length == 1){message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")}
         if(arr[1] == "gearscore"){updateGear(message)}
-        if(arr[1] == "level"){console.log("placeholder")}
-        if(arr[1] == "name"){console.log("placeholder")}
-        if(arr[1] == "class"){console.log("placeholder")}
+        if(arr[1] == "level"){updateLevel(message)}
+        if(arr[1] == "name"){updateName(message)}
+        if(arr[1] == "class"){updateClass(message)}
+    }else if(message.content.startsWith(prefix + "list")){
+        fetchData(message);
     }
 })
 
@@ -114,7 +116,106 @@ const updateGear = function (message){
             return
         });
         message.reply("Successfully updated gearscore!");
+    }else{
+        message.reply("Incorrect values");
     }
+}
+
+const updateLevel = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length < 3){
+        message.reply("Missing information!")
+        return
+    }
+    if(arr[2].match("^([0-9]{1,20})$")){
+        User.updateOne({userid: message.author.id},
+            {$set: {'level' : arr[2]}}).catch((err) =>{
+            console.log(err);
+            return
+        });
+        message.reply("Successfully updated Level!");
+    }else{
+        message.reply("Incorrect values");
+    }
+}
+
+const updateName = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length < 3){
+        message.reply("Missing information!")
+        return
+    }
+    if(arr[2].match("^([a-zA-Z]{1,20})$")){
+        User.updateOne({userid: message.author.id},
+            {$set: {'name' : arr[2]}}).catch((err) =>{
+            console.log(err);
+            return
+        });
+        message.reply("Successfully updated username!");
+    }else{
+        message.reply("Incorrect values");
+    }
+}
+
+const updateClass = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length < 3){
+        message.reply("Missing information!")
+        return
+    }
+    if(arr[2].match("^([a-zA-Z]{1,20})$")){
+        User.updateOne({userid: message.author.id},
+            {$set: {'class' : arr[2]}}).catch((err) =>{
+            console.log(err);
+            return
+        });
+        message.reply("Successfully updated Class!");
+    }else{
+        message.reply("Incorrect values");
+    }
+}
+
+const fetchData = function (message){
+    let arr = message.content.split(" ");
+    if(arr.length > 1){
+        if(arr[1].match("^([a-zA-Z]{1,20})$")){
+            User.find({class: arr[1]}).then((result)=>{
+                postList(result, message);
+            }).catch((err)=>{console.log(err)})
+        }else{
+            message.reply("Incorrect value!");
+            return
+        }
+    }else{
+        User.find().then((result)=>{
+            postList(result, message);
+        }).catch((err)=>{console.log(err)});
+    }
+}
+
+const postList = function (arr, message){
+    if(arr.length != 0){
+        if(arr.length != 1){
+            console.log(arr);
+            arr.sort(function (a,b){
+                return b.gearscore - a.gearscore;
+            });
+            console.log(arr);
+        }
+    }else {
+        message.reply("Oops seems like there's no data...");
+        return
+    }
+    let listStr = "```Name(class): gearscore level";
+    for(let i = 0; i < arr.length; i++){
+        listStr += "\n" + arr[i].name + "(" + arr[i].class + "): " + arr[i].gearscore + " " + arr[i].level
+    }
+    listStr += "```";
+    const embed = new MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('List of members sorted by gearscore')
+        .setDescription(listStr);
+    message.channel.send({embeds: [embed]});
 }
 
 
@@ -133,6 +234,7 @@ const gear = new User({
     .catch((err) => console.log(err));
 
  */
+
 
 client.login(process.env.TOKEN).then(r => {
     console.log("Successful login");
