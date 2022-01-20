@@ -14,20 +14,7 @@ client.on('ready', () => {
 
 client.on("messageCreate", (message)=> {
     if(message.content.startsWith(prefix + "add")){
-        addGear(message).then();
-        /*
-        let arr = message.content.split(" ");
-        if(!isNaN(arr[2])){
-         User.updateOne({userid: 123},
-             {$set: {'gearscore' : arr[2]}}).catch((err) =>{
-                 console.log(err);
-         });
-            message.reply("you did an update " + message.author.username);
-        }else{
-            message.reply("Invalid input");
-        }
-
-         */
+        addGear(message);
     }else if(message.content.startsWith(prefix + "update")){
         let arr = message.content.split(" ");
         if(arr.length == 1){message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")}
@@ -41,6 +28,8 @@ client.on("messageCreate", (message)=> {
         if(message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
             deleteUser(message);
         }else{message.reply("Missing permissions!")}
+    }else if(message.content.startsWith(prefix + "help")){
+        sendHelp(message);
     }
 })
 
@@ -115,8 +104,16 @@ const updateGear = function (message){
     }
     if(arr[2].match("^([0-9\.]{1,20})$")){
         User.updateOne({userid: message.author.id},
-            {$set: {'gearscore' : arr[2]}}).catch((err) =>{
+            {$set: {'gearscore' : arr[2]}}).then((result)=>{
+            console.log(result);
+            if(result.matchedCount == 1 && result.modifiedCount == 1){
+                message.reply("Successfully updated Class!");
+            }else{
+                message.reply("Please add your gear first by typing !add");
+            }
+        }).catch((err) =>{
             console.log(err);
+            message.reply("Database error!");
             return
         });
         message.reply("Successfully updated gearscore!");
@@ -133,8 +130,16 @@ const updateLevel = function (message){
     }
     if(arr[2].match("^([0-9]{1,20})$")){
         User.updateOne({userid: message.author.id},
-            {$set: {'level' : arr[2]}}).catch((err) =>{
+            {$set: {'level' : arr[2]}}).then((result)=>{
+            console.log(result);
+            if(result.matchedCount == 1 && result.modifiedCount == 1){
+                message.reply("Successfully updated Class!");
+            }else{
+                message.reply("Please add your gear first by typing !add");
+            }
+        }).catch((err) =>{
             console.log(err);
+            message.reply("Database error!");
             return
         });
         message.reply("Successfully updated Level!");
@@ -151,8 +156,16 @@ const updateName = function (message){
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
         User.updateOne({userid: message.author.id},
-            {$set: {'name' : arr[2]}}).catch((err) =>{
+            {$set: {'name' : arr[2]}}).then((result)=>{
+            console.log(result);
+            if(result.matchedCount == 1 && result.modifiedCount == 1){
+                message.reply("Successfully updated Class!");
+            }else{
+                message.reply("Please add your gear first by typing !add");
+            }
+        }).catch((err) =>{
             console.log(err);
+            message.reply("Database error!");
             return
         });
         message.reply("Successfully updated username!");
@@ -169,11 +182,18 @@ const updateClass = function (message){
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
         User.updateOne({userid: message.author.id},
-            {$set: {'class' : arr[2]}}).catch((err) =>{
+            {$set: {'class' : arr[2]}}).then((result)=>{
+                console.log(result);
+                if(result.matchedCount == 1 && result.modifiedCount == 1){
+                    message.reply("Successfully updated Class!");
+                }else{
+                    message.reply("Please add your gear first by typing !add");
+                }
+        }).catch((err) =>{
             console.log(err);
+            message.reply("Database error!");
             return
         });
-        message.reply("Successfully updated Class!");
     }else{
         message.reply("Incorrect values");
     }
@@ -223,7 +243,7 @@ const postList = function (arr, message){
 const deleteUser = function (message){
     let arr = message.content.split(" ");
     if(arr.length < 2) {
-        message.reply("Invalid input");
+        message.reply("To delete a user type:\n`!delete (username)`");
         return
     }
     User.deleteOne({name: arr[1]}).then((result) =>{
@@ -237,6 +257,15 @@ const deleteUser = function (message){
     }).catch((err) =>{
         console.log(err);
     })
+}
+
+const sendHelp = function (message){
+    const helpstr = "```!add\n!update\n!list\n!delete```"
+    const embed = new MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle("List of commands")
+        .setDescription(helpstr);
+    message.reply({embeds:[embed]});
 }
 
 mongoose.init();
