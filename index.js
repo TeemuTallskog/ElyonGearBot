@@ -289,7 +289,8 @@ const sendHelp = function (message){
     const embed = new MessageEmbed()
         .setColor("#0099ff")
         .setTitle("List of commands")
-        .setDescription(helpstr);
+        .setDescription(helpstr)
+        .setFooter({text: 'For support @GasGas#8390'});
     message.reply({embeds:[embed]});
 }
 
