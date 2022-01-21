@@ -339,7 +339,7 @@ const deleteUser = function (message){
 
 
 const sendHelp = function (message){
-    const helpstr = "```!help\n!add\n!update\n!list\n!avg\n!classes\n!delete```"
+    const helpstr = "```!help\n!add\n!add img (link/attachment)\n!gear (username)\n!update\n!list\n!avg\n!classes\n!delete```"
     const embed = new MessageEmbed()
         .setColor("#0099ff")
         .setTitle("List of commands")
