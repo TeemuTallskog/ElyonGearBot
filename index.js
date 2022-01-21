@@ -17,14 +17,18 @@ client.on("messageCreate", (message)=> {
         return
     }
     if(message.content.startsWith(prefix + "add")){
-        addGear(message);
+        if(message.content.startsWith(prefix + "add img")){
+            addImg(message);
+        }else {
+            addGear(message);
+        }
     }else if(message.content.startsWith(prefix + "update")){
         let arr = message.content.split(" ");
-        if(arr.length == 1){message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")}
-        if(arr[1] == "gearscore"){updateGear(message)}
-        if(arr[1] == "level"){updateLevel(message)}
-        if(arr[1] == "name"){updateName(message)}
-        if(arr[1] == "class"){updateClass(message)}
+        if(arr.length === 1){message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")}
+        if(arr[1] === "gearscore"){updateGear(message)}
+        if(arr[1] === "level"){updateLevel(message)}
+        if(arr[1] === "name"){updateName(message)}
+        if(arr[1] === "class"){updateClass(message)}
     }else if(message.content.startsWith(prefix + "list")){
         fetchData(message);
     }else if(message.content.startsWith(prefix + "delete")){
@@ -37,6 +41,8 @@ client.on("messageCreate", (message)=> {
         average(message);
     }else if(message.content.startsWith(prefix + "classes")){
         classesList(message);
+    }else if(message.content.startsWith(prefix + "gear")){
+        inspectGear(message);
     }
 })
 
@@ -107,6 +113,51 @@ const addGear = function (message){
         });
 }
 
+const addImg = async function(message){
+    let arr = message.content.split(" ");
+    let url = "";
+    if(arr.length < 3){
+        if(message.attachments.first().url != null){
+            if(isImg(message.attachments.first().url)){
+                url = message.attachments.first().url;
+            }
+        }else{
+            message.reply("Invalid image... Link must end with .png or .jpg and be under 250char\nType ``!add img (your link)``\nOr attach an image to command ``!add img``");
+            return
+        }
+    }else{
+        if(isImg(arr[2])){
+            url = arr[2];
+        }else {
+            message.reply("Invalid image... Link must end with .png or .jpg and be under 250char\nType ``!add img (your link)``\nOr attach an image to command ``!add img``");
+            return
+        }
+    }
+    await User.updateOne({userid: message.author.id},
+        {$set: {'link' : url}}).then((result) =>{
+        if(result.matchedCount == 1 && result.modifiedCount == 1){
+            message.reply("Successfully updated gearscore!");
+        }else if(result.matchedCount == 1 && result.modifiedCount == 0){
+            message.reply("Something went wrong!");
+        }else{
+            message.reply("Please add your gear first by typing !add");
+        }
+    }).catch((err)=>{
+        console.log(err);
+    })
+}
+
+const isImg = function (url){
+    let check = true
+    if(!url.startsWith("http://") && !url.startsWith("https://")){
+        check = false
+    }else if(!url.endsWith(".png") && !url.endsWith(".jpg")){
+        check = false
+    }else if(url.length > 250){
+        check = false
+    }
+    return check
+}
 
 
 const updateGear = async function (message){
@@ -373,7 +424,7 @@ const classesList = async function (message){
         let index = classArr.findIndex(obj =>{
             return obj.class === arr[i].lclass;
         });
-        if(index != -1){
+        if(index !== -1){
             classArr[index].n += 1;
         }else{
             let c = {
@@ -398,6 +449,54 @@ const classesList = async function (message){
         .setTitle("Class division (" + arr.length + ")")
         .setDescription(postStr);
     message.reply({embeds:[embed]});
+}
+
+const inspectGear = async function(message){
+    let arr = message.content.split(" ");
+    let resultArr = "";
+    if(arr.length < 2){
+        await User.findOne({userid: message.author.id}).then((result)=>{
+            if(result.length < 1){
+                message.reply("Please add your gear first by typing !add");
+            }else{
+                console.log(result);
+                resultArr = result;
+            }
+        }).catch((err)=>console.log(err));
+    }else{
+        await User.findOne({lname: arr[1].toLowerCase()}).then((result)=>{
+            if(result.length < 1){
+                message.reply("Couldn't find user " + arr[1]);
+            }else{
+                resultArr = result;
+            }
+        }).catch((err)=>console.log(err));
+    }
+    resultArr.lclass = resultArr.lclass.charAt(0).toUpperCase() + resultArr.lclass.substring(1);
+    let member = client.users.cache.get(resultArr.userid.toString());
+    if(member != undefined) {
+        const embed = new MessageEmbed()
+            .setColor("#0099ff")
+            .setAuthor({name: member.username, iconURL: member.avatarURL()})
+            .setFields(
+                {name: resultArr.lclass + " " + resultArr.level, value: "ilvl: " + resultArr.gearscore}
+            );
+        if(resultArr.link != null){
+            embed.setImage(resultArr.link);
+        }
+        message.reply({embeds: [embed]});
+    }else{
+        const embed = new MessageEmbed()
+            .setColor("#0099ff")
+            .setAuthor({name: resultArr.name})
+            .setFields(
+                {name: resultArr.lclass + " " + resultArr.level, value: "Gearscore: " + resultArr.gearscore}
+            );
+        if(resultArr.link != null){
+            embed.setImage(resultArr.link);
+        }
+        message.reply({embeds: [embed]});
+    }
 }
 
 mongoose.init();
