@@ -22,6 +22,14 @@ const userSchema = new Schema({
         type: Number,
         required: true
     },
+    lname:{
+        type: String,
+        required: true
+    },
+    lclass:{
+        type: String,
+        required: true
+    },
 });
 
 const User = mongoose.model('Usergear', userSchema);

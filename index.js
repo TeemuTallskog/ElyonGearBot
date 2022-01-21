@@ -87,7 +87,9 @@ const addGear = function (message){
         name: username,
         gearscore: gearscore,
         class: pClass,
-        level: level
+        level: level,
+        lname: username.toLowerCase(),
+        lclass: pClass.toLowerCase()
     });
 
     User.countDocuments({userid: userid},
@@ -171,8 +173,8 @@ const updateName = async function (message){
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
         await User.updateOne({userid: message.author.id},
-            {$set: {'name' : arr[2]}}).then((result)=>{
-            if(result.matchedCount == 1 && result.modifiedCount == 1){
+            {$set: {'name' : arr[2], 'lname' : arr[2].toLowerCase()}}).then((result)=>{
+            if(result.matchedCount == 1 && result.modifiedCount == 2){
                 message.reply("Successfully updated username!");
             }else if(result.matchedCount == 1 && result.modifiedCount == 0) {
                 message.reply("Something went wrong!");
@@ -199,7 +201,7 @@ const updateClass = async function (message){
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
         await User.updateOne({userid: message.author.id},
-            {$set: {'class' : arr[2]}}).then((result)=>{
+            {$set: {'class' : arr[2], 'lclass' : arr[2].toLowerCase()}}).then((result)=>{
                 if(result.matchedCount == 1 && result.modifiedCount == 1){
                     message.reply("Successfully updated Class!");
                 }else if(result.matchedCount == 1 && result.modifiedCount == 0) {
@@ -223,7 +225,7 @@ const fetchData = async function (message){
     let arr = message.content.split(" ");
     if(arr.length > 1){
         if(arr[1].match("^([a-zA-Z]{1,20})$")){
-            await User.find({class: arr[1]}).then((result)=>{
+            await User.find({lclass: arr[1].toLowerCase()}).then((result)=>{
                 postList(result, message);
             }).catch((err)=>{console.log(err)})
         }else{
@@ -252,7 +254,8 @@ const postList = function (arr, message){
     }
     let listStr = "```Name(class): gearscore level";
     for(let i = 0; i < arr.length; i++){
-        listStr += "\n" + arr[i].name + "(" + arr[i].class + "): " + arr[i].gearscore + " " + arr[i].level
+        arr[i].lclass = arr[i].lclass.charAt(0).toUpperCase() + arr[i].lclass.substring(1);
+        listStr += "\n" + arr[i].name + "(" + arr[i].lclass + "): " + arr[i].gearscore + " " + arr[i].level;
     }
     listStr += "```";
     const embed = new MessageEmbed()
@@ -368,13 +371,13 @@ const classesList = async function (message){
     let classArr = []
     for(let i = 0; i < arr.length; i++){
         let index = classArr.findIndex(obj =>{
-            return obj.class === arr[i].class.toLowerCase();
+            return obj.class === arr[i].lclass;
         });
         if(index != -1){
             classArr[index].n += 1;
         }else{
             let c = {
-                class: arr[i].class.toLowerCase(),
+                class: arr[i].lclass,
                 n: 1
             }
             classArr.push(c);
