@@ -368,13 +368,13 @@ const classesList = async function (message){
     let classArr = []
     for(let i = 0; i < arr.length; i++){
         let index = classArr.findIndex(obj =>{
-            return obj.class === arr[i].class
+            return obj.class === arr[i].class.toLowerCase();
         });
         if(index != -1){
             classArr[index].n += 1;
         }else{
             let c = {
-                class: arr[i].class,
+                class: arr[i].class.toLowerCase(),
                 n: 1
             }
             classArr.push(c);
@@ -386,6 +386,7 @@ const classesList = async function (message){
 
     let postStr = "```"
     for(let i = 0; i < classArr.length; i++){
+        classArr[i].class = classArr[i].class.charAt(0).toUpperCase() + classArr[i].class.substring(1);
         postStr += "\n" + classArr[i].class + " - " + classArr[i].n;
     }
     postStr += "```"
