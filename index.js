@@ -51,7 +51,7 @@ client.on("messageCreate", (message)=> {
 const addGear = function (message){
     let arr = message.content.split(" ");
     if(arr.length == 1){
-        message.reply("To add gear type:\n`!add (playername) (Class) (level) (gearscore)`");
+        message.reply("To add gear type:\n`!add (playername) (Class) (level) (gearscore)`\nYou can also add a gear image by typing:\n`!add (img url/attachment)");
         return
     }else if(arr.length < 5){
         message.reply("Missing information!");
