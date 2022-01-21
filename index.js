@@ -13,6 +13,9 @@ client.on('ready', () => {
 
 
 client.on("messageCreate", (message)=> {
+    if(message.author.bot || !message.content.startsWith(prefix)){
+        return
+    }
     if(message.content.startsWith(prefix + "add")){
         addGear(message);
     }else if(message.content.startsWith(prefix + "update")){
