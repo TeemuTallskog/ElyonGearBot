@@ -73,7 +73,7 @@ const addGear = function (message){
         message.reply("Incorrect Level");
         return
     }
-    if (arr[4].match("^([0-9\.]{1,20})$")) {
+    if (arr[4].match("^([0-9]{1,4}[\.]{0,1})$")) {
         gearscore = arr[4];
     } else {
         message.reply("Incorrect Gearscore");
@@ -104,18 +104,19 @@ const addGear = function (message){
 
 
 
-const updateGear = function (message){
+const updateGear = async function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
         message.reply("Missing information!")
         return
     }
-    if(arr[2].match("^([0-9\.]{1,20})$")){
-        User.updateOne({userid: message.author.id},
+    if(arr[2].match("^([0-9]{1,20}[\.]{0,1})$")){
+        await User.updateOne({userid: message.author.id},
             {$set: {'gearscore' : arr[2]}}).then((result)=>{
-            console.log(result);
             if(result.matchedCount == 1 && result.modifiedCount == 1){
-                message.reply("Successfully updated Class!");
+                message.reply("Successfully updated gearscore!");
+            }else if(result.matchedCount == 1 && result.modifiedCount == 0){
+                message.reply("Something went wrong!");
             }else{
                 message.reply("Please add your gear first by typing !add");
             }
@@ -124,7 +125,6 @@ const updateGear = function (message){
             message.reply("Database error!");
             return
         });
-        message.reply("Successfully updated gearscore!");
     }else{
         message.reply("Incorrect values");
     }
@@ -132,18 +132,19 @@ const updateGear = function (message){
 
 
 
-const updateLevel = function (message){
+const updateLevel = async function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
         message.reply("Missing information!")
         return
     }
     if(arr[2].match("^([0-9]{1,20})$")){
-        User.updateOne({userid: message.author.id},
+        await User.updateOne({userid: message.author.id},
             {$set: {'level' : arr[2]}}).then((result)=>{
-            console.log(result);
             if(result.matchedCount == 1 && result.modifiedCount == 1){
-                message.reply("Successfully updated Class!");
+                message.reply("Successfully updated Level!");
+            }else if(result.matchedCount == 1 && result.modifiedCount == 0) {
+                message.reply("Something went wrong!");
             }else{
                 message.reply("Please add your gear first by typing !add");
             }
@@ -152,7 +153,6 @@ const updateLevel = function (message){
             message.reply("Database error!");
             return
         });
-        message.reply("Successfully updated Level!");
     }else{
         message.reply("Incorrect values");
     }
@@ -160,18 +160,19 @@ const updateLevel = function (message){
 
 
 
-const updateName = function (message){
+const updateName = async function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
         message.reply("Missing information!")
         return
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
-        User.updateOne({userid: message.author.id},
+        await User.updateOne({userid: message.author.id},
             {$set: {'name' : arr[2]}}).then((result)=>{
-            console.log(result);
             if(result.matchedCount == 1 && result.modifiedCount == 1){
-                message.reply("Successfully updated Class!");
+                message.reply("Successfully updated username!");
+            }else if(result.matchedCount == 1 && result.modifiedCount == 0) {
+                message.reply("Something went wrong!");
             }else{
                 message.reply("Please add your gear first by typing !add");
             }
@@ -180,7 +181,6 @@ const updateName = function (message){
             message.reply("Database error!");
             return
         });
-        message.reply("Successfully updated username!");
     }else{
         message.reply("Incorrect values");
     }
@@ -188,18 +188,19 @@ const updateName = function (message){
 
 
 
-const updateClass = function (message){
+const updateClass = async function (message){
     let arr = message.content.split(" ");
     if(arr.length < 3){
         message.reply("Missing information!")
         return
     }
     if(arr[2].match("^([a-zA-Z]{1,20})$")){
-        User.updateOne({userid: message.author.id},
+        await User.updateOne({userid: message.author.id},
             {$set: {'class' : arr[2]}}).then((result)=>{
-                console.log(result);
                 if(result.matchedCount == 1 && result.modifiedCount == 1){
                     message.reply("Successfully updated Class!");
+                }else if(result.matchedCount == 1 && result.modifiedCount == 0) {
+                    message.reply("Something went wrong!");
                 }else{
                     message.reply("Please add your gear first by typing !add");
                 }
@@ -267,7 +268,6 @@ const deleteUser = function (message){
         return
     }
     User.deleteOne({name: arr[1]}).then((result) =>{
-        console.log(result);
         if(result.deletedCount == 1){
             message.reply("Deleted user: " + arr[1]);
         }else{
@@ -282,7 +282,7 @@ const deleteUser = function (message){
 
 
 const sendHelp = function (message){
-    const helpstr = "```!add\n!update\n!list\n!delete```"
+    const helpstr = "```!help\n!add\n!update\n!list\n!delete\n!avg\!classes```"
     const embed = new MessageEmbed()
         .setColor("#0099ff")
         .setTitle("List of commands")
