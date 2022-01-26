@@ -465,7 +465,9 @@ const inspectGear = async function(message){
         }).catch((err)=>console.log(err));
     }else{
         await User.findOne({lname: arr[1].toLowerCase()}).then((result)=>{
-            if(result.length < 1){
+            if(result === null){
+                message.reply("Couldn't find user " + arr[1]);
+            }else if(result.length < 1){
                 message.reply("Couldn't find user " + arr[1]);
             }else{
                 resultArr = result;
@@ -473,8 +475,11 @@ const inspectGear = async function(message){
         }).catch((err)=>console.log(err));
     }
     resultArr.lclass = resultArr.lclass.charAt(0).toUpperCase() + resultArr.lclass.substring(1);
+
     let member = client.users.cache.get(resultArr.userid.toString());
-    if(member != undefined) {
+
+    if(member !== undefined && member.avatar != null && member.username != null) {
+        console.log("problem");
         const embed = new MessageEmbed()
             .setColor("#0099ff")
             .setAuthor({name: member.username, iconURL: member.avatarURL()})
