@@ -13,36 +13,52 @@ client.on('ready', () => {
 
 
 client.on("messageCreate", (message)=> {
-    if(message.author.bot || !message.content.startsWith(prefix)){
-        return
-    }
-    if(message.content.startsWith(prefix + "add")){
-        if(message.content.startsWith(prefix + "add img")){
-            addImg(message);
-        }else {
-            addGear(message);
+    try {
+        if (message.author.bot || !message.content.startsWith(prefix)) {
+            return
         }
-    }else if(message.content.startsWith(prefix + "update")){
-        let arr = message.content.split(" ");
-        if(arr.length === 1){message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")}
-        if(arr[1] === "gearscore"){updateGear(message)}
-        if(arr[1] === "level"){updateLevel(message)}
-        if(arr[1] === "name"){updateName(message)}
-        if(arr[1] === "class"){updateClass(message)}
-    }else if(message.content.startsWith(prefix + "list")){
-        fetchData(message);
-    }else if(message.content.startsWith(prefix + "delete")){
-        if(message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
-            deleteUser(message);
-        }else{message.reply("Missing permissions!")}
-    }else if(message.content.startsWith(prefix + "help")){
-        sendHelp(message);
-    }else if(message.content.startsWith(prefix + "avg")){
-        average(message);
-    }else if(message.content.startsWith(prefix + "classes")){
-        classesList(message);
-    }else if(message.content.startsWith(prefix + "gear")){
-        inspectGear(message);
+        if (message.content.startsWith(prefix + "add")) {
+            if (message.content.startsWith(prefix + "add img")) {
+                addImg(message);
+            } else {
+                addGear(message);
+            }
+        } else if (message.content.startsWith(prefix + "update")) {
+            let arr = message.content.split(" ");
+            if (arr.length === 1) {
+                message.reply("To update type:\n`!update gearscore (gearscore)`\n`!update level (level)`\n`!update name (name)`\n`!update class (class)`")
+            }
+            if (arr[1] === "gearscore") {
+                updateGear(message)
+            }
+            if (arr[1] === "level") {
+                updateLevel(message)
+            }
+            if (arr[1] === "name") {
+                updateName(message)
+            }
+            if (arr[1] === "class") {
+                updateClass(message)
+            }
+        } else if (message.content.startsWith(prefix + "list")) {
+            fetchData(message);
+        } else if (message.content.startsWith(prefix + "delete")) {
+            if (message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")) {
+                deleteUser(message);
+            } else {
+                message.reply("Missing permissions!")
+            }
+        } else if (message.content.startsWith(prefix + "help")) {
+            sendHelp(message);
+        } else if (message.content.startsWith(prefix + "avg")) {
+            average(message);
+        } else if (message.content.startsWith(prefix + "classes")) {
+            classesList(message);
+        } else if (message.content.startsWith(prefix + "gear")) {
+            inspectGear(message);
+        }
+    }catch (e){
+        console.log(e);
     }
 })
 
@@ -451,35 +467,58 @@ const classesList = async function (message){
     message.reply({embeds:[embed]});
 }
 
-const inspectGear = async function(message){
+const inspectGear = async function(message) {
     let arr = message.content.split(" ");
     let resultArr = "";
-    if(arr.length < 2){
-        await User.findOne({userid: message.author.id}).then((result)=>{
-            if(result.length < 1){
-                message.reply("Please add your gear first by typing !add");
-            }else{
-                console.log(result);
-                resultArr = result;
-            }
-        }).catch((err)=>console.log(err));
-    }else{
-        await User.findOne({lname: arr[1].toLowerCase()}).then((result)=>{
-            if(result === null){
-                message.reply("Couldn't find user " + arr[1]);
-            }else if(result.length < 1){
-                message.reply("Couldn't find user " + arr[1]);
-            }else{
-                resultArr = result;
-            }
-        }).catch((err)=>console.log(err));
+    let member = undefined
+    if (arr.length < 2) {
+        console.log("hello");
+        try {
+            await User.findOne({userid: message.author.id}).then((result) => {
+                if (result !== null) {
+                    if (result.length < 1) {
+                        message.reply("Please add your gear first by typing !add");
+                        return
+                    } else {
+                        resultArr = result;
+                        member = client.users.cache.get(resultArr.userid.toString());
+                        printGear(member, resultArr, message);
+                    }
+                }else{
+                    message.reply("Please add your gear first by typing !add");
+                    return
+                }
+            }).catch((err) => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
+    } else {
+        try {
+            await User.findOne({lname: arr[1].toLowerCase()}).then((result) => {
+                if (result !== null) {
+                    if (result.length < 1) {
+                        message.reply("Couldn't find user " + arr[1]);
+                        return
+                    } else {
+                        resultArr = result;
+                        member = client.users.cache.get(resultArr.userid.toString());
+                        printGear(member, resultArr, message);
+                    }
+                }else{
+                    message.reply("Couldn't find user " + arr[1]);
+                    return
+                }
+            }).catch((err) => console.log(err));
+        } catch (err) {
+            console.log(err);
+        }
     }
-    resultArr.lclass = resultArr.lclass.charAt(0).toUpperCase() + resultArr.lclass.substring(1);
+}
 
-    let member = client.users.cache.get(resultArr.userid.toString());
 
-    if(member !== undefined && member.avatar != null && member.username != null) {
-        console.log("problem");
+let printGear = function (member, resultArr, message){
+
+    if(member !== undefined) {
         const embed = new MessageEmbed()
             .setColor("#0099ff")
             .setAuthor({name: member.username, iconURL: member.avatarURL()})
