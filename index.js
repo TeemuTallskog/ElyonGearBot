@@ -543,6 +543,18 @@ let printGear = function (member, resultArr, message){
     }
 }
 
+/*
+testUser = new User({
+    userid: 123,
+    name: "test",
+    gearscore: 300,
+    class: "test",
+    level: 49,
+    lname: "test",
+    lclass: "test"});
+testUser.save();
+ */
+
 mongoose.init();
 
 client.login(process.env.TOKEN).then(r => {
