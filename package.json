@@ -11,10 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/rest": "^0.2.0-canary.0",
+    "csv-writer": "^1.6.0",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
-    "mongoose": "^6.1.7",
-    "dotenv": "^14.2.0"
+    "dotenv": "^14.2.0",
+    "mongoose": "^6.1.7"
   },
   "engines": {
     "node": "16.x",

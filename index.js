@@ -1,10 +1,11 @@
-const {Client, Intents, MessageEmbed}= require("discord.js");
+const {Client, Intents, MessageEmbed, MessageAttachment}= require("discord.js");
 require('dotenv').config();
 const mongoose = require('./database/mongoose');
 const User = require('./models/user');
 const commands = require('./commands/slashcommands');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
-
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const path = require('path');
 const prefix = "!";
 
 client.on('ready', () => {
@@ -56,6 +57,12 @@ client.on("messageCreate", (message)=> {
             classesList(message);
         } else if (message.content.startsWith(prefix + "gear")) {
             inspectGear(message);
+        }else if (message.content.startsWith(prefix + "export")){
+            if (message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
+                exportCvs(message);
+            }else{
+                message.reply("Missing permissions");
+            }
         }
     }catch (e){
         console.log(e);
@@ -540,6 +547,53 @@ let printGear = function (member, resultArr, message){
             embed.setImage(resultArr.link);
         }
         message.reply({embeds: [embed]});
+    }
+}
+
+let exportCvs = async function (message){
+    let arr = [];
+    await User.find().then((result)=>{
+        if(result === null){
+            message.reply("Oops seems like there's no data...");
+            return
+        }
+        arr = Object.values(result);
+    }).catch((err)=>{
+        console.log(err);
+        message.reply("Database error!");
+    });
+
+    const csvWriter = createCsvWriter({
+        path: "gearlist.csv",
+        header: [
+            {id: "_id", title: "_id"},
+            {id: "userid", title: "userid"},
+            {id: "name", title: "name"},
+            {id: "gearscore", title: "gearscore"},
+            {id: "class", title: "class"},
+            {id: "level", title: "level"},
+            {id: "lname", title: "lname"},
+            {id: "lclass", title: "lclass"},
+            {id: "__v", title: "__v"},
+            {id: "updatedAt", title: "updatedAt"},
+            {id: "createdAt", title: "createdAt"},
+        ]
+    });
+
+    csvWriter.writeRecords(arr).then(() => {
+        console.log("File written successfully")
+    });
+
+
+    try{
+        message.reply({
+            files: [{
+                attachment: path.join(__dirname, 'gearlist.csv'),
+                name: 'gearlist.csv'
+            }]
+        }).then(console.log).catch(console.error);
+    }catch (e){
+        console.log(e)
     }
 }
 
