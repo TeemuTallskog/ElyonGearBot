@@ -326,7 +326,7 @@ const postList = function (arr, message){
         message.reply("Oops seems like there's no data...");
         return
     }
-    let listStr = "```Name(class): gearscore level";
+    let listStr = "```css\n" + "Name(class): gearscore level";
     for(let i = 0; i < arr.length; i++){
         arr[i].lclass = arr[i].lclass.charAt(0).toUpperCase() + arr[i].lclass.substring(1);
         listStr += "\n" + arr[i].name + "(" + arr[i].lclass + "): " + arr[i].gearscore + " " + arr[i].level;
