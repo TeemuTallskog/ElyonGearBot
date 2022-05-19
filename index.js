@@ -1,4 +1,4 @@
-const {Client, Intents, MessageEmbed, MessageAttachment}= require("discord.js");
+const {Client, Intents, MessageEmbed, MessageAttachment, GuildScheduledEvent}= require("discord.js");
 require('dotenv').config();
 const mongoose = require('./database/mongoose');
 const User = require('./models/user');
@@ -60,6 +60,12 @@ client.on("messageCreate", (message)=> {
         }else if (message.content.startsWith(prefix + "export")){
             if (message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
                 exportCvs(message);
+            }else{
+                message.reply("Missing permissions");
+            }
+        }else if (message.content.startsWith(prefix + "events")){
+            if(message.member.roles.cache.has("933174109137956964") || message.member.roles.cache.has("933173816350347304") || message.member.roles.cache.has("315963187742900237")){
+                showEvents(message, message.content.startsWith(prefix + "events missing"));
             }else{
                 message.reply("Missing permissions");
             }
@@ -369,6 +375,7 @@ const addDaysSince = function (arr, gearList){
 
 
 const getGearListString = function(gearList){
+    if(gearList.length === 0) return " ";
     let col1 = 0;
     let col2 = 0;
     //let col3 = 11;
@@ -394,7 +401,10 @@ const getGrid = function (gearList, col1, col2, col3, col4){
             let lclass = " " + gearList[i].lclass.charAt(0).toUpperCase() + gearList[i].lclass.substring(1) + getSpaces(col2 - gearList[i].lclass.length - 1);
             let gearscore = " " + gearList[i].gearscore + getSpaces(col3 - 3-1);
             let level = " " + gearList[i].level + getSpaces(col4 - 2-1);
-            let updatedAt = " " + ((present - new Date(gearList[i].updatedAt)) / (1000 * 60 * 60 * 24)).toFixed(0) + " Days ago\n";
+            let updatedAt = "";
+            if(gearList[i].updatedAt != null){
+                updatedAt = " " + ((present - new Date(gearList[i].updatedAt)) / (1000 * 60 * 60 * 24)).toFixed(0) + " Days ago\n";
+            }else updatedAt = " 0 Days ago\n";
             str[i] = name + lclass + gearscore + level + updatedAt + divider;
     }
     let finalString = "```css\n" + "Name" + getSpaces(col1 - 4) + " Class" + getSpaces(col2 - 6) + " GS" + getSpaces(col3 - 3) + " Lvl " + getSpaces(0) + " Last updated  \n";
@@ -404,6 +414,7 @@ const getGrid = function (gearList, col1, col2, col3, col4){
 }
 
 const getSpaces = function (i){
+    if(i < 0) i = 0;
     const space = " ";
     return space.repeat(i) + "|";
 }
@@ -665,6 +676,80 @@ let exportCvs = async function (message){
         }).then(console.log).catch(console.error);
     }catch (e){
         console.log(e)
+    }
+}
+
+let showEvents = async function(message, missing){
+    await message.guild.scheduledEvents.fetch().then(
+        (result) =>{
+            if(result != null){
+                if(result.size > 0){
+                    result.forEach(async (e) => {
+                        let attendingUsers = [];
+                        let fallback = [];
+                        await message.guild.scheduledEvents.fetchSubscribers(e).then((users) =>{
+                            users.forEach((eventUser =>{
+                                fallback.push({userid: eventUser.user.id, username: eventUser.user.username});
+                                attendingUsers.push(eventUser.user);
+                            }))
+                        })
+                        let printString = "";
+                        let title = "";
+                        if(missing){
+                            printString = getGearListString(await retrieveMissingUsers(fallback));
+                            title = e.name + " - Missing attendees";
+                        }else{
+                            printString = getGearListString(await retrieveUsers(attendingUsers, fallback));
+                            title = e.name + " - Attending users: " + attendingUsers.length;
+                        }
+                        const embed = new MessageEmbed()
+                            .setColor('#0099ff')
+                            .setTitle(title)
+                            .setDescription(printString);
+                        message.channel.send({embeds: [embed]});
+                    })
+                }else{
+                    message.reply("No events found!");
+                    return;
+                }
+            }else{
+                message.reply("No events found!");
+                return;
+            }
+        }
+    )
+}
+
+let retrieveMissingUsers = async function(users){
+    try{
+        let gearList = await User.find();
+        return gearList.filter(x => !users.some(e => e.userid == x.userid));
+    }catch (e){
+        console.log(e);
+        return [];
+    }
+
+
+}
+
+let retrieveUsers = async function(users, arr){
+    try{
+        let gearList = await User.find({userid : {$in: users}});
+        let nonFound = arr.filter(x => !gearList.some( e => e.userid == x.userid));
+        nonFound.forEach((u) => {
+            let entry = new User;
+            gearList.push(new User({
+                userid: u.userid,
+                name: u.username,
+                gearscore: 100,
+                lclass: "?",
+                level: 10
+            }));
+        });
+        return gearList;
+    }catch (e){
+        console.log(e);
+        return [];
     }
 }
 
