@@ -331,17 +331,7 @@ const postList = function (arr, message){
         message.reply("Oops seems like there's no data...");
         return
     }
-    /*
-    let listStr = "Name(class): gearscore level";
-    for(let i = 0; i < arr.length; i++){
-        arr[i].lclass = arr[i].lclass.charAt(0).toUpperCase() + arr[i].lclass.substring(1);
-        listStr += "\n" + arr[i].name + "(" + arr[i].lclass + "): " + arr[i].gearscore + " " + arr[i].level;
-    }
-    let splitList = listStr.split("\n");
-    let printString = "```css\n" + addDaysSince(splitList, arr).join('\r\n') +  "```";
 
-
-     */
     let printString = getGearListString(arr);
     const embed = new MessageEmbed()
         .setColor('#0099ff')
@@ -377,8 +367,6 @@ const getGearListString = function(gearList){
     if(gearList.length === 0) return " ";
     let col1 = 0;
     let col2 = 0;
-    //let col3 = 11;
-    //let col4 = 7;
     const col3 = 5;
     const col4 = 5;
     //Name, class, gearscore, level, updated since

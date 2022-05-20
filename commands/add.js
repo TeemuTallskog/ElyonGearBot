@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const {
+    SlashCommandBuilder
+} = require("@discordjs/builders");
 const User = require("./../models/user");
 
 module.exports = {
@@ -6,55 +8,72 @@ module.exports = {
         .setName("add")
         .setDescription("Add your gear to the database!")
         .addSubcommand(subCommand =>
-        subCommand
+            subCommand
             .setName("gear")
             .setDescription("Add your gear to the gearbot!")
             .addStringOption(option =>
                 option
-                    .setName("name")
-                    .setDescription("Character name")
-                    .setRequired(true))
+                .setName("name")
+                .setDescription("Character name")
+                .setRequired(true))
             .addStringOption(option =>
                 option
-                    .setName("class")
-                    .setDescription("Class")
-                    .setRequired(true))
+                .setName("class")
+                .setDescription("Class")
+                .setRequired(true))
             .addIntegerOption(option =>
                 option
-                    .setName("level")
-                    .setDescription("Level")
-                    .setRequired(true))
+                .setName("level")
+                .setDescription("Level")
+                .setRequired(true))
             .addIntegerOption(option =>
                 option
-                    .setName("gearscore")
-                    .setDescription("Item level")
-                    .setRequired(true))
+                .setName("gearscore")
+                .setDescription("Item level")
+                .setRequired(true))
         )
-        .addSubcommand(subCommand =>
-         subCommand
-             .setName("image")
-             .setDescription("Add a link to an image of your gear.")
-             .addStringOption(option =>
-             option
-                 .setName("url")
-                 .setDescription("Must end in .png or .jpg")
-                 .setRequired(true))
+        .addSubcommand(subcommand =>
+            subcommand
+            .setName("url")
+            .setDescription("URL to a .png or .jpg image of your gear")
+            .addStringOption(option =>
+                option
+                .setName("url")
+                .setDescription("URL must end in .png or .jpg")
+                .setRequired(true))
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+            .setName("attachment")
+            .setDescription("Image attachment of your gear")
+            .addAttachmentOption(option =>
+                option
+                .setName("image")
+                .setDescription("Attachment to an image")
+                .setRequired(true))
         ),
 
-
-
-    async execute(interaction){
-        if(interaction.options.getSubcommand() === "gear"){
+    async execute(interaction) {
+        const subcmd = interaction.options.getSubcommand();
+        if (subcmd === "gear") {
             await addGear(interaction);
         }
-        if(interaction.options.getSubcommand() === "image"){
-            await addImg(interaction);
+        if (subcmd === "url" || subcmd === "attachment") {
+            await addImg(interaction, subcmd === "attachment");
         }
     },
 }
 
-const addGear = async function (interaction){
+const addGear = async function (interaction) {
     const userid = interaction.user.id;
+    const res = await checkIfExists(userid);
+    if (res > 0) {
+        interaction.reply("You've already added your gear!\nTo update your gear use command `/update`");
+        return;
+    } else if (res === -1) {
+        interaction.reply("Error occured!");
+        return;
+    }
     let username = "";
     let pClass = "";
     let level = 0;
@@ -93,49 +112,61 @@ const addGear = async function (interaction){
         lname: username.toLowerCase(),
         lclass: pClass.toLowerCase()
     });
-
-    await User.countDocuments({userid: userid},
-        function (err, count){
-            if(count == 0){
-                input.save()
-                    .then((result) => {
-                        console.log(result);
-                        interaction.reply("Successfully added your gear!");
-                    })
-                    .catch((err) => console.log(err));
-            }else{
-                interaction.reply("You've already added your gear!\nTo update your gear type `!update`");
-            }
-        });
+    if (res === 0) {
+        input.save()
+            .then((result) => {
+                console.log(result);
+                interaction.reply("Successfully added your gear!");
+            })
+            .catch((err) => console.log(err));
+    }
 }
 
-const addImg = async function(interaction){
-    let url = interaction.options.getString("image url");
-    if(!isImg(url)){
-        interaction.reply("Invalid image... Link must end with .png or .jpg and be under 250char\nType ``!add img (your link)``\nOr attach an image to command ``!add img``");
+const checkIfExists = async function (userid) {
+    return User.countDocuments({
+        userid: userid
+    }).exec().catch(err => {
+        console.error(err);
+        return -1;
+    });
+}
+
+const addImg = async function (interaction, isAttachement) {
+    let url = "";
+    if (isAttachement) {
+        url = interaction.options.getAttachment("image").url;
+    } else {
+        url = interaction.options.getString("url");
     }
-    await User.updateOne({userid: interaction.user.id},
-        {$set: {'link' : url}}).then((result) =>{
-        if(result.matchedCount == 1 && result.modifiedCount == 1){
-            interaction.reply("Successfully updated gearscore!");
-        }else if(result.matchedCount == 1 && result.modifiedCount == 0){
-            interaction.reply("Something went wrong!");
-        }else{
-            interaction.reply("Please add your gear first by typing !add");
+    if (!isImg(url)) {
+        interaction.reply("Invalid image... Link must end with .png or .jpg and be under 250char\nType ``/add img (your link)``\nOr attach an image to command ``!add img``");
+    }
+    await User.updateOne({
+        userid: interaction.user.id
+    }, {
+        $set: {
+            'link': url
         }
-    }).catch((err)=>{
+    }).then((result) => {
+        if (result.matchedCount == 1 && result.modifiedCount == 1) {
+            interaction.reply("Successfully added image!");
+        } else if (result.matchedCount == 1 && result.modifiedCount == 0) {
+            interaction.reply("Something went wrong!");
+        } else {
+            interaction.reply("Please add your gear first by using command /add gear");
+        }
+    }).catch((err) => {
         console.log(err);
     })
 }
 
-const isImg = function (url){
-    let check = true;
-    if(!url.startsWith("http://") && !url.startsWith("https://")){
-        check = false;
-    }else if(!url.endsWith(".png") && !url.endsWith(".jpg")){
-        check = false;
-    }else if(url.length > 250){
-        check = false;
+const isImg = function (url) {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return false;
+    } else if (!url.endsWith(".png") && !url.endsWith(".jpg")) {
+        return false;
+    } else if (url.length > 250) {
+        return false;
     }
-    return check;
+    return true;
 }
