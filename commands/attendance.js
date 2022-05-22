@@ -118,8 +118,8 @@ module.exports = {
 
 let refreshCooldown = new Set();
 
-const refreshList = async function(interaction){
-    if(refreshCooldown.has(interaction.message.embeds[0].footer.text)){
+const refreshList = async function (interaction) {
+    if (refreshCooldown.has(interaction.message.embeds[0].footer.text)) {
         interaction.reply({
             content: "Refresh is on cooldown...",
             ephemeral: true
@@ -134,11 +134,11 @@ const refreshList = async function(interaction){
     fields[0].value = "```\n";
     fields[1].value = "```\n";
 
-    if(event != null){
-        for(const user of event.attendees){
-            if(user.attending){
+    if (event != null) {
+        for (const user of event.attendees) {
+            if (user.attending) {
                 fields[0].value += user.username + "\n";
-            }else{
+            } else {
                 fields[1].value += user.username + "\n";
             }
         }
@@ -156,66 +156,74 @@ const refreshList = async function(interaction){
         ephemeral: true,
         content: "Success"
     });
-    try{
-    refreshCooldown.add(interaction.message.embeds[0].footer.text)
-    setTimeout(() => refreshCooldown.delete(interaction.message.embeds[0].footer.text), 10000);
-    }catch(err){console.error(err)}
+    try {
+        refreshCooldown.add(interaction.message.embeds[0].footer.text)
+        setTimeout(() => refreshCooldown.delete(interaction.message.embeds[0].footer.text), 10000);
+    } catch (err) {
+        console.error(err)
+    }
 }
 
-const deleteEvent = async function(interaction){
+const deleteEvent = async function (interaction) {
     const eventid = interaction.options.getString("id");
     let event = [];
-    if(!eventid){
-        const events = await CustomEvent.find().then(res =>{
+    if (!eventid) {
+        const events = await CustomEvent.find().then(res => {
             return res;
-        }).catch(err => {console.error(err)});
+        }).catch(err => {
+            console.error(err)
+        });
         const deleted = await CustomEvent.deleteMany({}).catch(err => {
             console.error(err);
         })
-        if(deleted.deletedCount == 0){
+        if (deleted.deletedCount == 0) {
             interaction.reply("Couldn't find any events");
             return;
         }
-        for(const e of events){
+        for (const e of events) {
             event.push(e);
         }
         interaction.reply("Successfully deleted all Attendance events!");
-    }else{
-        await CustomEvent.findOneAndDelete({eventid: eventid}).then(result =>{
-            if(result != null){
+    } else {
+        await CustomEvent.findOneAndDelete({
+            eventid: eventid
+        }).then(result => {
+            if (result != null) {
                 interaction.reply("Successfully deleted " + eventid);
                 return event.push(result);
-            }else{
+            } else {
                 interaction.reply("Couldn't find an event with the eventid of " + eventid);
                 return null;
             }
-        }).catch(err => {console.error(err)});
+        }).catch(err => {
+            console.error(err)
+        });
     }
-    if(event == null){
+    if (event == null) {
         interaction.channel.send("Couldn't find any messages to delete");
         return;
     }
     deleteMessages(interaction, event);
 }
 
-const deleteMessages = async function(interaction, events){
+const deleteMessages = async function (interaction, events) {
     const channels = interaction.guild.channels;
-    events.forEach(async (event)=> {
-        try{
-        const channel = await channels.fetch(event.messagechannel).then(res =>{
-            return res;
-        }).catch(err => {
-            console.error(err);
-            throw Error;
-        });
-        if(channel != null){
-            await channel.messages.fetch(event.messageid).then(msg =>{
-                msg.delete();
+    events.forEach(async (event) => {
+        try {
+            const channel = await channels.fetch(event.messagechannel).then(res => {
+                return res;
+            }).catch(err => {
+                console.error(err);
+                throw Error;
             });
-        }else{
-            throw Error;
-        }
-        }catch(err){
+            if (channel != null) {
+                await channel.messages.fetch(event.messageid).then(msg => {
+                    msg.delete();
+                });
+            } else {
+                throw Error;
+            }
+        } catch (err) {
             console.error(err);
             interaction.channel.send(event.name + " embed couldn't be found");
         }
@@ -230,21 +238,21 @@ const listAttending = async function (interaction, attending) {
         console.error(err);
     });
 
-    if(!event){
+    if (!event) {
         interaction.reply("Couldn't find an event with the given id");
         return;
     }
     interaction.reply("Found event " + event.name);
     let users = [];
     for (const user of event.attendees) {
-        if(user.attending == attending){
+        if (user.attending == attending) {
             users.push(user.userid);
         }
     }
     const gearList = await findUsers(users);
     const printString = await listPrinter.getPrintString(gearList);
     let title = event.name;
-    if(attending) title += " | Attending users.";
+    if (attending) title += " | Attending users.";
     else title += " | Signed off users."
     const embed = new MessageEmbed()
         .setColor('#0099ff')
@@ -255,7 +263,7 @@ const listAttending = async function (interaction, attending) {
     });
 }
 
-const listMissing = async function (interaction){
+const listMissing = async function (interaction) {
     const eventid = interaction.options.getString("id");
     const event = await CustomEvent.findOne({
         eventid: eventid
@@ -263,7 +271,7 @@ const listMissing = async function (interaction){
         console.error(err);
     });
 
-    if(!event){
+    if (!event) {
         interaction.reply("Couldn't find an event with the given id");
         return;
     }
@@ -283,8 +291,8 @@ const listMissing = async function (interaction){
     });
 }
 
-const findMissingUsers = async function(users){
-    const gearlist = await User.find().catch(error =>{
+const findMissingUsers = async function (users) {
+    const gearlist = await User.find().catch(error => {
         console.error(error);
     })
     return gearlist.filter(x => !users.some(e => e == x.userid));
@@ -305,7 +313,7 @@ const findUsers = async function (users) {
 let cooldownList = new Set();
 
 const signUp = async function (interaction, attending) {
-    if(cooldownList.has(interaction.user.id)){
+    if (cooldownList.has(interaction.user.id)) {
         interaction.reply({
             ephemeral: true,
             content: "You're on cooldown..."
@@ -328,7 +336,7 @@ const signUp = async function (interaction, attending) {
         })
     })
     cooldownList.add(interaction.user.id);
-    setTimeout(() => cooldownList.delete(interaction.user.id), 5000);
+    setTimeout(() => cooldownList.delete(interaction.user.id), 1000);
     if (userdata == null || userdata.attendees.size == 0) {
         await pushUserToEvent(interaction, attending);
         let fields = interaction.message.embeds[0].fields;
@@ -337,7 +345,7 @@ const signUp = async function (interaction, attending) {
         } else {
             fields[1].value = fields[1].value.slice(0, -3) + interaction.member.displayName + "\n```";
         }
-        replyAttending(interaction, fields, attending);
+        replyAttending(interaction, attending, true);
     } else if (userdata.attendees[0].attending == attending) {
         let attendingstr = "attending";
         if (!attending) attendingstr = "not attending"
@@ -347,33 +355,29 @@ const signUp = async function (interaction, attending) {
         });
         return;
     } else {
-        if (attending) {
-            await editUserInEvent(interaction, true);
-            let fields = interaction.message.embeds[0].fields;
-            fields[1].value = fields[1].value.replace(userdata.attendees[0].username + "\n", "");
-            fields[0].value = fields[0].value.slice(0, -3) + interaction.member.displayName + "\n```";
-            replyAttending(interaction, fields, true);
-        } else {
-            await editUserInEvent(interaction, false);
-            let fields = interaction.message.embeds[0].fields;
-            fields[0].value = fields[0].value.replace(userdata.attendees[0].username + "\n", "");
-            fields[1].value = fields[1].value.slice(0, -3) + interaction.member.displayName + "\n```";
-            replyAttending(interaction, fields, false);
-        }
+        await editUserInEvent(interaction, attending);
+        replyAttending(interaction, attending, false);
+        let attendingstr = "not attending";
+        if (attending) attendingstr = "attending";
+        interaction.reply({
+            content: "Successfully marked as " + attendingstr,
+            ephemeral: true
+        });
     }
 }
 
-const replyAttending = function (interaction, fields, attending) {
-    let attendingstr = "not attending";
-    if (attending) attendingstr = "attending";
-    const newEmbed = interaction.message.embeds[0].setFields(fields);
-    interaction.message.edit({
-        embeds: [newEmbed]
-    });
-    interaction.reply({
-        content: "Successfully marked as " + attendingstr,
-        ephemeral: true
-    });
+const replyAttending = function (interaction, attending, newEntry) {
+    interaction.channel.messages.fetch(interaction.message.id).then(msg => {
+        let fields = msg.embeds[0].fields;
+        let index = [0, 1];
+        if (attending) index = [1, 0];
+        if (!newEntry) fields[index[0]].value = fields[index[0]].value.replace(userdata.attendees[0].username + "\n", "");
+        fields[index[1]].value = fields[index[1]].value.slice(0, -3) + interaction.member.displayName + "\n```";
+        const newEmbed = interaction.message.embeds[0].setFields(fields);
+        msg.edit({
+            embeds: [newEmbed]
+        });
+    })
 }
 
 const editUserInEvent = async function (interaction, attending) {
