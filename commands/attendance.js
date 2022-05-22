@@ -298,9 +298,17 @@ const findUsers = async function (users) {
     }
 }
 
-
+let cooldownList = new Set();
 
 const signUp = async function (interaction, attending) {
+    if(cooldownList.has(interaction.user.id)){
+        interaction.reply({
+            ephemeral: true,
+            content: "You're on cooldown..."
+        })
+        return;
+    }
+
     const userdata = await CustomEvent.findOne({
         eventid: interaction.message.embeds[0].footer.text,
         attendees: {
@@ -315,6 +323,8 @@ const signUp = async function (interaction, attending) {
             ephemeral: true
         })
     })
+    cooldownList.add(interaction.user.id);
+    setTimeout(() => cooldownList.delete(interaction.user.id), 5000);
     if (userdata == null || userdata.attendees.size == 0) {
         await pushUserToEvent(interaction, attending);
         let fields = interaction.message.embeds[0].fields;
