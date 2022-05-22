@@ -53,22 +53,38 @@ client.once("ready", () => {
 })
 
 client.on("interactionCreate", async interaction => {
-    if (!interaction.isCommand()) return;
+    if (interaction.isCommand()) {
 
-    const command = client.commands.get(interaction.commandName);
+        const command = client.commands.get(interaction.commandName);
 
-    if (!command) return;
+        if (!command) return;
 
-    try {
-        await command.execute(interaction);
-    } catch (e) {
-        if (e) console.log(e);
-        await interaction.reply({
-            content: "An error occured",
-            ephemeral: true
-        });
+        try {
+            await command.execute(interaction);
+        } catch (e) {
+            if (e) console.log(e);
+            errorReply(interaction);
+        }
     }
+    if(interaction.isButton()){
+        const command = client.commands.get(interaction.message.interaction.commandName);
+        if(!command) return;
+        try{
+            await command.execute(interaction);
+        }catch(e){
+            if(e) console.error(e);
+            errorReply(interaction);
+        }
+    }
+
 });
+
+const errorReply = async function(interaction){
+    await interaction.reply({
+        content: "An error occured",
+        ephemeral: true
+    })
+}
 
 mongoose.init();
 
