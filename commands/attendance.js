@@ -84,6 +84,9 @@ module.exports = {
                 case "signoff":
                     await signUp(interaction, false);
                     break;
+                case "refresh":
+                    await refreshList(interaction);
+                    break;
             }
             return;
         }
@@ -111,6 +114,48 @@ module.exports = {
             interaction.reply("Missing permissions!");
         }
     }
+}
+
+let cooldown = false;
+
+const refreshList = async function(interaction){
+    if(cooldown){
+        interaction.reply({
+            content: "Refresh is on cooldown...",
+            ephemeral: true
+        })
+        return;
+    }
+    const event = await CustomEvent.findOne({
+        eventid: interaction.message.embeds[0].footer.text
+    }).catch(console.error);
+
+    let fields = interaction.message.embeds[0].fields;
+    fields[0].value = "```\n";
+    fields[1].value = "```\n";
+
+    for(const user in event.attendees){
+        if(user.attending){
+            fields[0].value += user.username + "\n";
+        }else{
+            fields[1].value += user.username + "\n";
+        }
+    }
+
+    fields[0].value += "```";
+    fields[1].value += "```";
+
+    const newEmbed = interaction.message.embeds[0].setFields(fields);
+    interaction.message.edit({
+        embeds: [newEmbed]
+    });
+
+    interaction.reply({
+        ephemeral: true,
+        content: "Success"
+    });
+    cooldown = true;
+    setTimeout(() => cooldown = false, 10000);
 }
 
 const deleteEvent = async function(interaction){
@@ -369,6 +414,12 @@ const createEvent = async function (interaction) {
             .setCustomId('signoff')
             .setLabel('Sign off')
             .setStyle('DANGER')
+        )
+        .addComponents(
+            new MessageButton()
+            .setCustomId('refresh')
+            .setLabel('Refresh')
+            .setStyle(2)
         );
     const embed = new MessageEmbed()
         .setColor('0x00FFF')
