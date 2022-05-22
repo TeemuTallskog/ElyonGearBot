@@ -116,10 +116,10 @@ module.exports = {
     }
 }
 
-let cooldown = false;
+let refreshCooldown = new Set();
 
 const refreshList = async function(interaction){
-    if(cooldown){
+    if(refreshCooldown.has(interaction.message.embeds[0].footer.text)){
         interaction.reply({
             content: "Refresh is on cooldown...",
             ephemeral: true
@@ -134,7 +134,7 @@ const refreshList = async function(interaction){
     fields[0].value = "```\n";
     fields[1].value = "```\n";
 
-    for(const user in event.attendees){
+    for(const user of event.attendees){
         if(user.attending){
             fields[0].value += user.username + "\n";
         }else{
@@ -154,8 +154,10 @@ const refreshList = async function(interaction){
         ephemeral: true,
         content: "Success"
     });
-    cooldown = true;
-    setTimeout(() => cooldown = false, 10000);
+    try{
+    refreshCooldown.add(interaction.message.embeds[0].footer.text)
+    setTimeout(() => refreshCooldown.delete(interaction.message.embeds[0].footer.text), 10000);
+    }catch(err){console.error(err)}
 }
 
 const deleteEvent = async function(interaction){
