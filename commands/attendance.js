@@ -339,12 +339,6 @@ const signUp = async function (interaction, attending) {
     setTimeout(() => cooldownList.delete(interaction.user.id), 1000);
     if (userdata == null || userdata.attendees.size == 0) {
         await pushUserToEvent(interaction, attending);
-        let fields = interaction.message.embeds[0].fields;
-        if (attending) {
-            fields[0].value = fields[0].value.slice(0, -3) + interaction.member.displayName + "\n```";
-        } else {
-            fields[1].value = fields[1].value.slice(0, -3) + interaction.member.displayName + "\n```";
-        }
         replyAttending(interaction, attending, true);
     } else if (userdata.attendees[0].attending == attending) {
         let attendingstr = "attending";
