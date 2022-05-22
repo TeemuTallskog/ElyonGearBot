@@ -134,11 +134,13 @@ const refreshList = async function(interaction){
     fields[0].value = "```\n";
     fields[1].value = "```\n";
 
-    for(const user of event.attendees){
-        if(user.attending){
-            fields[0].value += user.username + "\n";
-        }else{
-            fields[1].value += user.username + "\n";
+    if(event != null){
+        for(const user of event.attendees){
+            if(user.attending){
+                fields[0].value += user.username + "\n";
+            }else{
+                fields[1].value += user.username + "\n";
+            }
         }
     }
 
