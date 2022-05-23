@@ -337,12 +337,16 @@ const signUp = async function (interaction, attending) {
     })
     cooldownList.add(interaction.user.id);
     setTimeout(() => cooldownList.delete(interaction.user.id), 1000);
+    let attendingstr = "attending";
+    if (!attending) attendingstr = "not attending"
     if (userdata == null || userdata.attendees.size == 0) {
         await pushUserToEvent(interaction, attending);
-        replyAttending(interaction, attending, true);
+        replyAttending(interaction, attending, null);
+        interaction.reply({
+            content: "Successfully marked as " + attendingstr,
+            ephemeral: true
+        });
     } else if (userdata.attendees[0].attending == attending) {
-        let attendingstr = "attending";
-        if (!attending) attendingstr = "not attending"
         interaction.reply({
             content: "You're already marked as " + attendingstr,
             ephemeral: true
@@ -350,7 +354,7 @@ const signUp = async function (interaction, attending) {
         return;
     } else {
         await editUserInEvent(interaction, attending);
-        replyAttending(interaction, attending, false);
+        replyAttending(interaction, attending, userdata);
         let attendingstr = "not attending";
         if (attending) attendingstr = "attending";
         interaction.reply({
@@ -360,18 +364,18 @@ const signUp = async function (interaction, attending) {
     }
 }
 
-const replyAttending = function (interaction, attending, newEntry) {
+const replyAttending = function (interaction, attending, userdata) {
     interaction.channel.messages.fetch(interaction.message.id).then(msg => {
         let fields = msg.embeds[0].fields;
         let index = [0, 1];
         if (attending) index = [1, 0];
-        if (!newEntry) fields[index[0]].value = fields[index[0]].value.replace(userdata.attendees[0].username + "\n", "");
+        if (userdata != null) fields[index[0]].value = fields[index[0]].value.replace(userdata.attendees[0].username + "\n", "");
         fields[index[1]].value = fields[index[1]].value.slice(0, -3) + interaction.member.displayName + "\n```";
         const newEmbed = interaction.message.embeds[0].setFields(fields);
         msg.edit({
             embeds: [newEmbed]
         });
-    })
+    }).catch(err => {console.log(err)});
 }
 
 const editUserInEvent = async function (interaction, attending) {
