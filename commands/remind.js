@@ -61,13 +61,19 @@ const remindAll = async function(interaction, client){
         return null;
     })
     if(event == null){
-        interaction.reply("No event with the given id was found!")
+        interaction.reply({
+            content: "No event with the given id was found!",
+            ephemeral: true
+        });
         return;
     }
 
     const members = await User.find().catch(err => console.log(err));
     if(members == null || members.length == 0){
-        interaction.reply("No members found");
+        interaction.reply({
+            content: "No members found",
+            ephemeral: true
+        });
         return;
     }
     const remindList = members.filter(x => !event.attendees.some(e => e.userid == x.userid));
@@ -78,7 +84,10 @@ const remindAll = async function(interaction, client){
         .setDescription("Please inform us of your attendace, event can be found from #cw-attendance");
 
     let unableToSend = []
-    interaction.reply("Sending out reminders...");
+    interaction.reply({
+        content: "Sending out reminders...",
+        ephemeral: false
+    });
     for(const member of remindList){
         console.log(member);
         const response = await sendDM(member, embed, client, interaction);
@@ -96,10 +105,14 @@ const remindAll = async function(interaction, client){
             .setDescription("List of users weren't able to recieve a reminder" + missingUsersString);
         await interaction.editReply({
             content: "Missing reminders...",
-            embeds: [replyEmbed]
+            embeds: [replyEmbed],
+            ephemeral: false
         });
     }else{
-        await interaction.editReply("Successfully reminded all members!");
+        await interaction.editReply({
+            content: "Successfully reminded all members!",
+            ephemeral: false
+        });
     }
 
 }
@@ -112,12 +125,18 @@ const remindOne = async function(interaction){
         console.error(e);
     });
     if(event == null){
-        interaction.reply("Event with the given id was not found!");
+        interaction.reply({
+            content: "Event with the given id was not found!",
+            ephemeral: true
+        });
         return;
     }
     const user = interaction.options.getUser("member");
     if(event.attendees.some(e => e.userid == user.id)){
-        interaction.reply("User has already marked their attendance for the event!");
+        interaction.reply({
+            content: "User has already marked their attendance for the event!",
+            ephemeral: true
+        });
         return;
     }
     const embed = new MessageEmbed()
@@ -129,9 +148,15 @@ const remindOne = async function(interaction){
             embeds: [embed]
         })
     }catch(error){
-        interaction.reply("Unable to send reminder");
+        interaction.reply({
+            content: "Unable to send reminder",
+            ephemeral: true
+        });
     }
-    interaction.reply("Successfully sent out the reminder!");
+    interaction.reply({
+        content: "Successfully sent out the reminder!",
+        ephemeral: true
+    });
 }
 
 const sendDM = async function (user, embed, client, interaction) {
