@@ -235,7 +235,7 @@ const listAttending = async function (interaction, attending) {
     const event = await CustomEvent.findOne({
         eventid: eventid
     }).catch(e => {
-        console.error(err);
+        console.error(e);
     });
 
     if (!event) {
