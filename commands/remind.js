@@ -103,7 +103,7 @@ const remindAll = async function (interaction, client) {
         const replyEmbed = new MessageEmbed()
             .setColor("#0099ff")
             .setTitle("Reminders sent to " + (remindList.length - unableToSend.length) + " out of " + remindList.length + " members")
-            .setDescription("List of users weren't able to recieve a reminder" + missingUsersString);
+            .setDescription("List of users who weren't able to recieve a reminder" + missingUsersString);
         await interaction.editReply({
             content: "Missing reminders...",
             embeds: [replyEmbed],
@@ -111,7 +111,7 @@ const remindAll = async function (interaction, client) {
         });
     } else {
         await interaction.editReply({
-            content: "Successfully reminded all members!",
+            content: "Successfully sent out reminders to " + remindList.length + " members!",
             ephemeral: false
         });
     }
@@ -164,12 +164,10 @@ const sendDM = async function (user, embed, client, interaction) {
     let member = await timeout(2000, interaction.guild.members.fetch(user.userid)).then(res =>{
         return res;
     }).catch(() => null);
-    console.log(member);
     if (member == null) {
         member = await timeout(2000, client.users.fetch(user.userid)).then(res =>{
             return res;
         }).catch(() => null);
-        console.log(member);
         if (member == null) {
             return false;
         }
