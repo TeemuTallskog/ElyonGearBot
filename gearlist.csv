@@ -1,0 +1,23 @@
+_id,userid,name,gearscore,class,level,lname,lclass,__v,updatedAt,createdAt
+61eacc765b9d5b7fe102c578,264173570937192450,cyrus,903,warlord,50,cyrus,warlord,0,Sun May 15 2022 22:27:17 GMT+0300 (Itä-Euroopan kesäaika),
+61eacd835b9d5b7fe102c57d,232987191876386800,Terra,886,Mystic,50,terra,mystic,0,Sat Apr 30 2022 21:47:20 GMT+0300 (Itä-Euroopan kesäaika),
+61eacf765b9d5b7fe102c582,101444949240709120,EXE,894,Assassin,50,exe,assassin,0,Wed May 11 2022 00:08:15 GMT+0300 (Itä-Euroopan kesäaika),
+61ec8030af63fece40d4a8ef,200290478850179070,Proxy,931,Slayer,50,proxy,slayer,0,Sun May 22 2022 22:14:37 GMT+0300 (Itä-Euroopan kesäaika),
+61ef1f0fd780b18a90ca3578,255454665653747700,Testdrive,856,Archer,51,testdrive,archer,0,Tue May 17 2022 15:02:27 GMT+0300 (Itä-Euroopan kesäaika),
+61ef2439d780b18a90ca358f,902298484336644200,KarmaYu,742,Slayer,47,karmayu,slayer,0,Tue Feb 15 2022 22:42:47 GMT+0200 (Itä-Euroopan normaaliaika),
+61ef2b6cd780b18a90ca3598,164494812026765300,Nexum,900,Assassin,50,nexum,assassin,0,Fri May 06 2022 22:47:20 GMT+0300 (Itä-Euroopan kesäaika),
+61f2aba0f07812ad834d71c1,213765880926961660,LightSniper,911,Archer,50,lightsniper,archer,0,Fri Apr 01 2022 17:10:32 GMT+0300 (Itä-Euroopan kesäaika),
+61f56aa14d252521dc4a3b06,118478644191559680,Thomson,938,Warlord,51,thomson,warlord,0,Sat Apr 30 2022 21:07:27 GMT+0300 (Itä-Euroopan kesäaika),Sat Jan 29 2022 18:26:09 GMT+0200 (Itä-Euroopan normaaliaika)
+6206e4cb9584fdf73855d64c,326870466780332000,Harly,922,Archer,52,harly,archer,0,Sun May 22 2022 14:57:10 GMT+0300 (Itä-Euroopan kesäaika),Sat Feb 12 2022 00:35:55 GMT+0200 (Itä-Euroopan normaaliaika)
+6206e5309584fdf73855d64f,157130265771245570,Eikha,810,Assassin,48,eikha,assassin,0,Thu Feb 24 2022 08:20:45 GMT+0200 (Itä-Euroopan normaaliaika),Sat Feb 12 2022 00:37:36 GMT+0200 (Itä-Euroopan normaaliaika)
+620f9b18298a54cbd8888b2e,543414658422276100,Hixi,826,Warlord,49,hixi,warlord,0,Sat Mar 19 2022 15:31:32 GMT+0200 (Itä-Euroopan normaaliaika),Fri Feb 18 2022 15:11:52 GMT+0200 (Itä-Euroopan normaaliaika)
+621013af846d89c12d23962a,164083090547933200,MildlyMoist,847,Assassin,49,mildlymoist,assassin,0,Sat Mar 05 2022 19:29:23 GMT+0200 (Itä-Euroopan normaaliaika),Fri Feb 18 2022 23:46:23 GMT+0200 (Itä-Euroopan normaaliaika)
+621025e9846d89c12d239630,211598184257028100,ToxicBounty,850,Gunner,50,toxicbounty,gunner,0,Thu May 12 2022 01:44:58 GMT+0300 (Itä-Euroopan kesäaika),Sat Feb 19 2022 01:04:09 GMT+0200 (Itä-Euroopan normaaliaika)
+62111150846d89c12d239643,119230164981776380,Sniarf,790,Slayer,48,sniarf,slayer,0,Thu Mar 10 2022 16:44:05 GMT+0200 (Itä-Euroopan normaaliaika),Sat Feb 19 2022 17:48:33 GMT+0200 (Itä-Euroopan normaaliaika)
+6227cd17bce73ce0d7188385,309006994470076400,Dashyien,730,Archer,49,dashyien,archer,0,Wed Mar 23 2022 21:06:50 GMT+0200 (Itä-Euroopan normaaliaika),Tue Mar 08 2022 23:39:35 GMT+0200 (Itä-Euroopan normaaliaika)
+6230e94c9a1c5be36f6bb651,261112888431869950,Henpai,845,Assassin,49,henpai,assassin,0,Wed Apr 20 2022 16:16:58 GMT+0300 (Itä-Euroopan kesäaika),Tue Mar 15 2022 21:30:20 GMT+0200 (Itä-Euroopan normaaliaika)
+6239d968f9299c1d1bab6237,158961688492638200,AugustinLeBlanc,856,Mystic,49,augustinleblanc,mystic,0,Wed May 25 2022 01:04:36 GMT+0300 (Itä-Euroopan kesäaika),Tue Mar 22 2022 16:12:56 GMT+0200 (Itä-Euroopan normaaliaika)
+6260082daa90984e25c88c55,241645408793788400,Bjuny,723,Slayer,49,bjuny,slayer,0,Sun May 15 2022 16:35:31 GMT+0300 (Itä-Euroopan kesäaika),Wed Apr 20 2022 16:18:37 GMT+0300 (Itä-Euroopan kesäaika)
+626aa45b9a5809c4f897d8db,231703218495815680,Zehff,803,Gunner,49,zehff,gunner,0,Wed May 11 2022 18:43:36 GMT+0300 (Itä-Euroopan kesäaika),Thu Apr 28 2022 17:27:39 GMT+0300 (Itä-Euroopan kesäaika)
+627c1089238973e3ed840c1e,274092477835771900,Akogare,838,warlord,49,akogare,warlord,0,Wed May 11 2022 22:37:45 GMT+0300 (Itä-Euroopan kesäaika),Wed May 11 2022 22:37:45 GMT+0300 (Itä-Euroopan kesäaika)
+628d5b1d36204399896253e6,153871694262435840,Gas,100,test,10,gas,test,0,Wed May 25 2022 01:24:29 GMT+0300 (Itä-Euroopan kesäaika),Wed May 25 2022 01:24:29 GMT+0300 (Itä-Euroopan kesäaika)
