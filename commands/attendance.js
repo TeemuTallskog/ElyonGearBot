@@ -339,14 +339,20 @@ const signUp = async function (interaction, attending) {
     setTimeout(() => cooldownList.delete(interaction.user.id), 1000);
     let attendingstr = "attending";
     if (!attending) attendingstr = "not attending"
-    if (userdata == null || userdata.attendees.size == 0) {
+    if(userdata == null || userdata.attendees.size == 0) {
         await pushUserToEvent(interaction, attending);
         replyAttending(interaction, attending, null);
         interaction.reply({
             content: "Successfully marked as " + attendingstr,
             ephemeral: true
         });
-    } else if (userdata.attendees[0].attending === attending) {
+        return;
+    }else{
+        userdata.attendees = await userdata.attendees.filter(x => x.userid == interaction.user.id);
+    }
+    if (userdata.attendees[0].attending === attending) {
+        console.log(userdata.attendees);
+        console.log(attending);
         interaction.reply({
             content: "You're already marked as " + attendingstr,
             ephemeral: true
@@ -355,8 +361,6 @@ const signUp = async function (interaction, attending) {
     } else {
         await editUserInEvent(interaction, attending);
         replyAttending(interaction, attending, userdata);
-        let attendingstr = "not attending";
-        if (attending) attendingstr = "attending";
         interaction.reply({
             content: "Successfully marked as " + attendingstr,
             ephemeral: true
