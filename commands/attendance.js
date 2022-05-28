@@ -346,7 +346,7 @@ const signUp = async function (interaction, attending) {
             content: "Successfully marked as " + attendingstr,
             ephemeral: true
         });
-    } else if (booleanComapre(userdata.attendees[0].attending, attending) == 0) {
+    } else if (booleanCompare(userdata.attendees[0].attending, attending) == 0) {
         interaction.reply({
             content: "You're already marked as " + attendingstr,
             ephemeral: true
