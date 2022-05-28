@@ -346,7 +346,7 @@ const signUp = async function (interaction, attending) {
             content: "Successfully marked as " + attendingstr,
             ephemeral: true
         });
-    } else if (booleanCompare(userdata.attendees[0].attending, attending) == 0) {
+    } else if (userdata.attendees[0].attending === attending) {
         interaction.reply({
             content: "You're already marked as " + attendingstr,
             ephemeral: true
@@ -362,10 +362,6 @@ const signUp = async function (interaction, attending) {
             ephemeral: true
         });
     }
-}
-
-const booleanCompare = function ( a, b){
-    return Number(a) - Number (b);
 }
 
 const replyAttending = function (interaction, attending, userdata) {
