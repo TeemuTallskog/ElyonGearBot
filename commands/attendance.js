@@ -135,13 +135,19 @@ const refreshList = async function (interaction) {
     fields[1].value = "```\n";
 
     if (event != null) {
+        let attendingNum = 0;
+        let notAttendingNum = 0;
         for (const user of event.attendees) {
             if (user.attending) {
                 fields[0].value += user.username + "\n";
+                attendingNum++;
             } else {
                 fields[1].value += user.username + "\n";
+                notAttendingNum++
             }
         }
+        fields[0].name = "Attending (" + attendingNum + "):"
+        fields[1].name = "Not attending (" + notAttendingNum + "):"
     }
 
     fields[0].value += "```";
@@ -375,6 +381,18 @@ const replyAttending = function (interaction, attending, userdata) {
         if (attending) index = [1, 0];
         if (userdata != null) fields[index[0]].value = fields[index[0]].value.replace(userdata.attendees[0].username + "\n", "");
         fields[index[1]].value = fields[index[1]].value.slice(0, -3) + interaction.member.displayName + "\n```";
+        if(userdata == null){
+            fields[index[1]].name = fields[index[1]].name.replace(/(\d+)+/g, function(match, number) {
+                return parseInt(number)+1;
+            });
+        }else{
+            fields[index[1]].name = fields[index[1]].name.replace(/(\d+)+/g, function(match, number) {
+                return parseInt(number)+1;
+            });
+            fields[index[0]].name = fields[index[0]].name.replace(/(\d+)+/g, function(match, number) {
+                return parseInt(number)-1;
+            });
+        }
         const newEmbed = interaction.message.embeds[0].setFields(fields);
         msg.edit({
             embeds: [newEmbed]
@@ -445,8 +463,8 @@ const createEvent = async function (interaction) {
         .setColor('0x00FFF')
         .setTitle(interaction.options.getString("name"))
         .setDescription(interaction.options.getString("description"))
-        .addField('Attending:', "```\n```")
-        .addField('Not attending:', "```\n```")
+        .addField('Attending (0):', "```\n```")
+        .addField('Not attending (0):', "```\n```")
         .setFooter({
             text: customid
         });
