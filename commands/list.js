@@ -59,7 +59,7 @@ const postList = function (arr, interaction) {
         return
     }
 
-    let printString = listPrinter.getPrintString(arr);
+    let printString = await listPrinter.getPrintString(arr);
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setTitle('List of members sorted by gearscore')
