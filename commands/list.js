@@ -47,7 +47,7 @@ const fetchData = async function (interaction) {
     }
 }
 
-const postList = function (arr, interaction) {
+const postList = async function (arr, interaction) {
     if (arr.length != 0) {
         if (arr.length != 1) {
             arr.sort(function (a, b) {
