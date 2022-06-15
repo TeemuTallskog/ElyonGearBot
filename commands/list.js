@@ -6,6 +6,7 @@ const {
     execute
 } = require("./add");
 const {MessageEmbed} = require("discord.js");
+const listPrinter = require("../functions/listPrinter");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -45,8 +46,6 @@ const fetchData = async function (interaction) {
         });
     }
 }
-
-const listPrinter = require("../functions/listPrinter");
 
 const postList = function (arr, interaction) {
     if (arr.length != 0) {
