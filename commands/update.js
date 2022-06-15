@@ -69,7 +69,7 @@ module.exports = {
 const updateGear = async function (interaction) {
     let gs = interaction.options.getInteger("ilevel");
 
-    if (gs < 1000 && gs > 0) {
+    if (gs < 9999 && gs > 0) {
         await User.updateOne({
             userid: interaction.user.id
         }, {

@@ -11,7 +11,7 @@ const getGearListString = function (gearList) {
     if (gearList.length === 0) return " ";
     let col1 = 0;
     let col2 = 0;
-    const col3 = 5;
+    const col3 = 6;
     const col4 = 5;
     //Name, class, gearscore, level, updated since
     for (const element of gearList) {
