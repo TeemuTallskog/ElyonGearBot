@@ -40,7 +40,7 @@ client.once("ready", () => {
             console.log('Started refreshing application (/) commands.');
 
             await rest.put(
-                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), {
+                Routes.applicationCommands(process.env.CLIENT_ID), {
                     body: commands
                 },
             );
@@ -55,7 +55,10 @@ client.once("ready", () => {
 
 client.on("interactionCreate", async interaction => {
     if (interaction.isCommand()) {
-
+        if(interaction.guildId === null){
+            interaction.reply("Slashcommands are disabled in DM's");
+            return;
+        }
         const command = client.commands.get(interaction.commandName);
 
         if (!command) return;
