@@ -134,12 +134,19 @@ const checkIfExists = async function (userid) {
 const addImg = async function (interaction, isAttachement) {
     let url = "";
     if (isAttachement) {
-        url = interaction.options.getAttachment("image").url;
+        try{
+            url = interaction.options.getAttachment("image").url;
+        }catch(error){
+            console.log(error);
+            interaction.reply("Invalid attachment!");
+            return;
+        }
     } else {
         url = interaction.options.getString("url");
     }
     if (!isImg(url)) {
         interaction.reply("Invalid image... Link must end with .png or .jpg and be under 250char\nType ``/add img (your link)``\nOr attach an image to command ``!add img``");
+        return;
     }
     await User.updateOne({
         userid: interaction.user.id
