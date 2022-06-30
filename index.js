@@ -63,6 +63,7 @@ client.on("interactionCreate", async interaction => {
 
         if (!command) return;
 
+        console.log(interaction.commandName);
         try {
             if(interaction.commandName === "remind"){
                 await command.execute(interaction, client);

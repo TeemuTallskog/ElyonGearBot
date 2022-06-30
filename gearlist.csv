@@ -1,0 +1,25 @@
+_id,userid,name,gearscore,class,level,lname,lclass,__v,updatedAt,createdAt
+61eacc765b9d5b7fe102c578,264173570937192448,cyrus,903,warlord,51,cyrus,warlord,0,Tue Jun 14 2022 18:59:23 GMT+0300 (Eastern European Summer Time),
+61eacd835b9d5b7fe102c57d,232987191876386817,Terra,955,Mystic,52,terra,mystic,0,Sat Jun 25 2022 14:21:06 GMT+0300 (Eastern European Summer Time),
+61eacf765b9d5b7fe102c582,101444949240709120,EXE,971,Assassin,52,exe,assassin,0,Wed Jun 29 2022 02:12:41 GMT+0300 (Eastern European Summer Time),
+61ec8030af63fece40d4a8ef,200290478850179072,Proxy,990,Slayer,51,proxy,slayer,0,Tue Jun 21 2022 23:20:13 GMT+0300 (Eastern European Summer Time),
+61ef1f0fd780b18a90ca3578,255454665653747712,Testdrive,920,Archer,52,testdrive,archer,0,Sat Jun 18 2022 22:46:27 GMT+0300 (Eastern European Summer Time),
+61ef2b6cd780b18a90ca3598,164494812026765313,Nexum,934,Assassin,51,nexum,assassin,0,Sat Jun 18 2022 15:10:05 GMT+0300 (Eastern European Summer Time),
+61f56aa14d252521dc4a3b06,118478644191559681,Thomson,1015,Warlord,51,thomson,warlord,0,Wed Jun 15 2022 22:13:24 GMT+0300 (Eastern European Summer Time),Sat Jan 29 2022 18:26:09 GMT+0200 (Eastern European Standard Time)
+6206e4cb9584fdf73855d64c,326870466780332032,Harly,1010,Archer,52,harly,archer,0,Wed Jun 15 2022 22:26:56 GMT+0300 (Eastern European Summer Time),Sat Feb 12 2022 00:35:55 GMT+0200 (Eastern European Standard Time)
+621025e9846d89c12d239630,211598184257028096,ToxicBounty,945,Gunner,51,toxicbounty,gunner,0,Fri Jun 24 2022 20:37:14 GMT+0300 (Eastern European Summer Time),Sat Feb 19 2022 01:04:09 GMT+0200 (Eastern European Standard Time)
+6230e94c9a1c5be36f6bb651,261112888431869952,Henpai,900,Assassin,50,henpai,assassin,0,Sun Jun 12 2022 23:52:29 GMT+0300 (Eastern European Summer Time),Tue Mar 15 2022 21:30:20 GMT+0200 (Eastern European Standard Time)
+6239d968f9299c1d1bab6237,158961688492638208,AugustinLeBlanc,880,Mystic,50,augustinleblanc,mystic,0,Tue Jun 14 2022 02:25:11 GMT+0300 (Eastern European Summer Time),Tue Mar 22 2022 16:12:56 GMT+0200 (Eastern European Standard Time)
+6260082daa90984e25c88c55,241645408793788416,Bjuny,833,Slayer,50,bjuny,slayer,0,Fri Jun 24 2022 22:24:00 GMT+0300 (Eastern European Summer Time),Wed Apr 20 2022 16:18:37 GMT+0300 (Eastern European Summer Time)
+627c1089238973e3ed840c1e,274092477835771904,Akogare,904,warlord,51,akogare,warlord,0,Mon Jun 20 2022 12:49:06 GMT+0300 (Eastern European Summer Time),Wed May 11 2022 22:37:45 GMT+0300 (Eastern European Summer Time)
+6293537fc81ec078d24f990d,127045802412474368,xHADESx,754,Elementalist,48,xhadesx,elementalist,0,Wed Jun 15 2022 21:16:22 GMT+0300 (Eastern European Summer Time),Sun May 29 2022 14:05:35 GMT+0300 (Eastern European Summer Time)
+62a4bc1914ce01bd60ba495f,243537632116736010,Ebih,906,Mystic,50,ebih,mystic,0,Sat Jun 11 2022 19:00:25 GMT+0300 (Eastern European Summer Time),Sat Jun 11 2022 19:00:25 GMT+0300 (Eastern European Summer Time)
+62bc86bf689298cabfc3ba38,378583460874551306,Vienra,972,Mystic,50,vienra,mystic,0,Wed Jun 29 2022 20:07:11 GMT+0300 (Eastern European Summer Time),Wed Jun 29 2022 20:07:11 GMT+0300 (Eastern European Summer Time)
+62bc8837689298cabfc3ba3e,168767554964291584,XWL,990,Slayer,52,xwl,slayer,0,Wed Jun 29 2022 20:13:27 GMT+0300 (Eastern European Summer Time),Wed Jun 29 2022 20:13:27 GMT+0300 (Eastern European Summer Time)
+62bc95bf689298cabfc3ba45,714058887573012501,Guirca,955,Archer,52,guirca,archer,0,Wed Jun 29 2022 21:11:11 GMT+0300 (Eastern European Summer Time),Wed Jun 29 2022 21:11:11 GMT+0300 (Eastern European Summer Time)
+62bca477689298cabfc3ba4a,881236587323748393,0Nauzika0,872,mystic,49,0nauzika0,mystic,0,Wed Jun 29 2022 22:13:59 GMT+0300 (Eastern European Summer Time),Wed Jun 29 2022 22:13:59 GMT+0300 (Eastern European Summer Time)
+62bd700a689298cabfc3bad9,517227312786178049,OnarchKrad,941,Elemantalist,51,onarchkrad,elemantalist,0,Thu Jun 30 2022 12:43:47 GMT+0300 (Eastern European Summer Time),Thu Jun 30 2022 12:42:34 GMT+0300 (Eastern European Summer Time)
+62bd9b09689298cabfc3bb13,294128226748596224,Devastador,841,slayer,51,devastador,slayer,0,Thu Jun 30 2022 15:46:01 GMT+0300 (Eastern European Summer Time),Thu Jun 30 2022 15:46:01 GMT+0300 (Eastern European Summer Time)
+62bd9faa689298cabfc3bb17,182228617005236225,Lovette,895,Assassin,50,lovette,assassin,0,Thu Jun 30 2022 16:05:46 GMT+0300 (Eastern European Summer Time),Thu Jun 30 2022 16:05:46 GMT+0300 (Eastern European Summer Time)
+62bda09d689298cabfc3bb1a,385149355037949962,Lych,980,Warlord,51,lych,warlord,0,Thu Jun 30 2022 16:13:04 GMT+0300 (Eastern European Summer Time),Thu Jun 30 2022 16:09:49 GMT+0300 (Eastern European Summer Time)
+62bdaa7e5b67fb0b79c66b45,486683025309040641,TaubsenLive,865,Archer,50,taubsenlive,archer,0,Thu Jun 30 2022 16:51:58 GMT+0300 (Eastern European Summer Time),Thu Jun 30 2022 16:51:58 GMT+0300 (Eastern European Summer Time)
