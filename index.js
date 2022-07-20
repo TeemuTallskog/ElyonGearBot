@@ -76,7 +76,11 @@ client.on("interactionCreate", async interaction => {
         }
     }
     if(interaction.isButton()){
-        const command = client.commands.get(interaction.message.interaction.commandName);
+        console.log(interaction.message.interaction.commandName);
+        let command = client.commands.get(interaction.message.interaction.commandName);
+        if(!command && (interaction.customId == "signup" || interaction.customId == "signoff")){
+            command = client.commands.get("attendance");
+        }
         if(!command) return;
         try{
             await command.execute(interaction);
