@@ -78,7 +78,7 @@ client.on("interactionCreate", async interaction => {
     if(interaction.isButton()){
         console.log(interaction.message.interaction.commandName);
         let command = client.commands.get(interaction.message.interaction.commandName);
-        if(!command && (interaction.customId == "signup" || interaction.customId == "signoff")){
+        if(!command && (interaction.customId == "signup" || interaction.customId == "signoff" || interaction.customId == "refresh")){
             command = client.commands.get("attendance");
         }
         if(!command) return;
